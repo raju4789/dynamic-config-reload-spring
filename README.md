@@ -69,55 +69,15 @@ cd dynamic-config-reload-spring
 docker-compose build
 docker-compose up
 ```
+**Test the value:**
+
+   ```bash
+   curl http://localhost:8080/greet
+   ```
 
 ---
 
-## 🔗 Step 3: Configure the Config Server
-
-In `config-server/src/main/resources/application.yml`, set your config repo URL:
-
-```yaml
-spring:
-  cloud:
-    config:
-      server:
-        git:
-          uri: https://github.com/your-username/tourni-config.git
-          clone-on-start: true
-          default-label: main
-```
-
----
-
-## 🧑‍💻 Step 4: Develop Your Microservice
-
-- In your microservice (e.g. `demo-service`), set the application name to match your config file:
-
-  ```yaml
-  spring:
-    application:
-      name: demo-service
-  ```
-
-- Use `@RefreshScope` on beans that should reload config dynamically:
-
-  ```java
-  @RefreshScope
-  @RestController
-  public class GreetingController {
-      @Value("${greeting.message:Hello default}")
-      private String message;
-
-      @GetMapping("/greet")
-      public String greet() {
-          return message;
-      }
-  }
-  ```
-
----
-
-## 🔄 Step 5: Manual Config Refresh
+## 🔄 Step 3: Manual Config Refresh
 
 1. **Update your config in the GitHub repo** (e.g., change `greeting.message`).
 2. **Trigger a distributed refresh:**
@@ -139,49 +99,7 @@ spring:
 
 - `/actuator/health` and `/actuator/info` are public.
 - `/actuator/busrefresh` requires HTTP Basic Auth (`admin:admin` by default).
-- All other endpoints require HTTP Basic Auth.
-- **Change default credentials for production!**
-
----
-
-## 📝 Example Config Server `application.yml`
-
-```yaml
-server:
-  port: 8888
-
-spring:
-  security:
-    user:
-      name: admin
-      password: admin
-  cloud:
-    bus:
-      enabled: true
-      monitor:
-        enabled: true
-    config:
-      server:
-        git:
-          uri: https://github.com/your-username/tourni-config.git
-          clone-on-start: true
-          default-label: main
-  kafka:
-    bootstrap-servers: kafka:9092
-
-management:
-  endpoints:
-    web:
-      exposure:
-        include: "bus-refresh,health,info"
-  endpoint:
-    shutdown:
-      enabled: true
-    health:
-      probes:
-        enabled: true
-      show-details: always
-```
+- **Change default credentials for production! and get the values from vault**
 
 ---
 
