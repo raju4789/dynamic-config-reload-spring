@@ -134,8 +134,3 @@ docker-compose up
 
 **Happy coding! 🚀**
 ```
-
----
-
-**Copy and paste this into your `README.md`!**  
-Let me know if you want to add a section for advanced security, troubleshooting, or a sample webhook filter.
